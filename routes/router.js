@@ -21,8 +21,13 @@ conn.login(process.env.SF_USERNAME, process.env.SF_PWD, function(err, userInfo) 
 
 router.get('/api', function(req, res){
 	console.log('hi');
+	var status = req.param('status');
+	var soql = '';
+	if(status){
+		soql = "SELECT Id, Name FROM Lead where Status LIKE '%" + status + "%'";
+	}
 	var records = [];
-	conn.query("SELECT Id, Name FROM Lead where Status LIKE '%Open%' ")
+	conn.query(soql || 'SELECT Id, Name FROM Lead')
 	  .on("record", function(record) {
 	    records.push(record);
 	  })
